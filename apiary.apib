@@ -1,0 +1,71 @@
+FORMAT: 1A
+HOST: http://polls.apiblueprint.org/
+
+# Mobile API
+
+This API is for communication between a Mobile app and NMS for Unlocking.
+
+## Unlock [/unlock]
+
+### Unlock Status [GET]
+
+Do a GET request to get the status of a device.
+
++ Request (application/json)
+
+        {
+            "serialNumber": 1234567890
+        }
+    
++ Response 200 (application/json)
+
+        {
+            "status": 5
+        }
+    
+    
+### Create Unlock [POST]
+
+You may create your own question using this action. It takes a JSON
+object containing a question and a collection of answers in the
+form of choices.
+
++ Request (application/json)
+
+        {
+            "question": "Favourite programming language?",
+            "choices": [
+                "Swift",
+                "Python",
+                "Objective-C",
+                "Ruby"
+            ]
+        }
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /questions/2
+
+    + Body
+
+            {
+                "question": "Favourite programming language?",
+                "published_at": "2015-08-05T08:40:51.620Z",
+                "choices": [
+                    {
+                        "choice": "Swift",
+                        "votes": 0
+                    }, {
+                        "choice": "Python",
+                        "votes": 0
+                    }, {
+                        "choice": "Objective-C",
+                        "votes": 0
+                    }, {
+                        "choice": "Ruby",
+                        "votes": 0
+                    }
+                ]
+            }
