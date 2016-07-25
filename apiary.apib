@@ -1,71 +1,362 @@
 FORMAT: 1A
 HOST: http://polls.apiblueprint.org/
 
-# Mobile API
+# Embedded UI
 
-This API is for communication between a Mobile app and NMS for Unlocking.
+## Configuration
 
-## Unlock [/unlock]
+Unless a user takes action, the REST Interface is enabled by default.
 
-### Unlock Status [GET]
+Unless noted, all API calls only work over HTTPS.
 
-Do a GET request to get the status of a device.
+All POST requests are done through traditional forms, not JSON. All responses are in JSON.
+
+# Group Unlock
+
+HTTP Enabled
+
+## Unlock Device [POST /core/api/service/unlock.php]
+
++ Attributes
+
+    + user: charlie (string, required) - API Username
+    + password: rocks (string, required) - API Password
+    + Key: ABCDEFGH (string) - Unlock code
+
++ Response 200 (applicaiton/json)
+
+        {
+          "response": {
+            "mimosaContent": [],
+            "mimosaStatus": {
+              "status": 0,
+              "message": "Command succeeded"
+            }
+          }
+        }
+
+## Get Country Code [GET /core/api/service/unlock.php?user={user}&password={password}]
 
 + Request (application/json)
 
++ Parameters
+    + user (required, string, `charlie`) ... API User name
+    + password (required, string, `rocks`) ... API Password
+
++ Response 200 (applicaiton/json)
+
         {
-            "serialNumber": 1234567890
+          "response": {
+            "mimosaContent": {
+              "values": {
+                "Key": "296"
+              },
+              "errors": []
+            },
+            "mimosaStatus": {
+              "status": 0,
+              "message": "Command succeeded"
+            }
+          }
         }
+        
+
+# Group Device
+
+## Ethernet [/core/api/service/ethernet.php]
+
+### Set [POST]
+
++ Attributes
+
+    + user: charlie (string, required) - API Username
+    + password: rocks (string, required) - API Password
+    + IPAddressMode: `DHCP` (enum) - Static IP with DHCP or only static
+        + Default: `DHCP`
+        + Members
+            + Static
+            + DHCP
+    + StaticIP: 192.168.1.20 (string) - Static IP
+    + StaticNetmask: 255.255.255.0 (string) - Static Network Mask
+    + StaticDNS1: 8.8.8.8 (string) - First DNS server
+    + StaticDNS2: 8.8.4.4 (string) - Second DNS server
+    + MTU: 60 (number) - Set the MTU
+    + RPSmode: false (boolean) - Set RPS
+    
     
 + Response 200 (application/json)
 
         {
-            "status": 5
+        
         }
-    
-    
-### Create Unlock [POST]
 
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
+### Get [GET /core/api/service/ethernet.php&username={username}&password={password}]
+
+Not only will this return the configured state of the various network interfces, it'll also return the *active* configuration. Meaning it'll give you the current DHCP IP and Static configured IP.
+
++ Parameters
+    + user: `charlie` (string, required) - API User name
+    + password: `rocks` (required, string) - API Password
+
+    
++ Response 200 (application/json)
+
+        {
+          "response": {
+            "mimosaContent": {
+              "values": {
+                "PortSpeed": "Auto",
+                "SpanningTree": "0",
+                "IPAddressMode": "DHCP",
+                "CurrIP": "192.168.1.20",
+                "CurrNetmask": "255.255.255.0",
+                "CurrGateway": "192.168.1.1",
+                "CurrDNS1": "8.8.8.8",
+                "CurrDNS2": "8.8.4.4",
+                "StaticIP": "192.168.1.20",
+                "StaticNetmask": "255.255.255.0",
+                "StaticGateway": "192.168.1.1",
+                "StaticDNS1": "8.8.8.8",
+                "StaticDNS2": "8.8.4.4",
+                "Curr": {
+                  "IP": "192.168.1.20",
+                  "Netmask": "255.255.255.0",
+                  "Gateway": "192.168.1.1",
+                  "PrimaryDNS": "8.8.8.8",
+                  "SecondaryDNS": "8.8.4.4"
+                },
+                "Static": {
+                  "IP": "192.168.1.20",
+                  "Netmask": "255.255.255.0",
+                  "Gateway": "192.168.1.1",
+                  "PrimaryDNS": "8.8.8.8",
+                  "SecondaryDNS": "8.8.4.4"
+                },
+                "ActualIP": "192.168.1.20",
+                "MTU": "1500",
+                "RPSmode": "0",
+                "FlowControl": "0"
+              },
+              "errors": []
+            },
+            "mimosaStatus": {
+              "status": 0,
+              "message": "Command succeeded"
+            }
+          }
+        }
+
+## Configuration [/core/api/service/Device.php]
+
+### Set [POST]
+
++ Attributes
+
+    + user: charlie (string, required) - API Username
+    + password: rocks (string, required) - API Password
+    + DeviceName: MimosaB5 (string) - Device human friendly name
+    + Description: Link between John and Jason (string) - Description of device
+    + InstallDate: `2016-07-07` (string) - Installation device
+    
+
++ Response 200 (application/json)
+    
+        {
+          "response": {
+            "mimosaContent": [],
+            "mimosaStatus": {
+              "status": 0,
+              "message": "Command succeeded"
+            }
+          }
+        }
+
+### Get [GET /core/api/service/Device.php&username={username}&password={password}]
+
++ Parameters
+    + user: `charlie` (string, required) - API User name
+    + password: `rocks` (required, string) - API Password
+
+
++ Response 200 (application/json)
+
+        {
+          "response": {
+            "mimosaContent": {
+              "values": {
+                "DeviceName": "CharlieAPI",
+                "Description": "",
+                "InstallDate": "",
+                "Model": "C01",
+                "DeviceMode": "Station",
+                "SerialNumber": "3011287419",
+                "Version": "PRIVATE-",
+                "Country": "United States",
+                "LastReboot": "2d 18h 41m 42s",
+                "IPAddress": "192.168.1.20",
+                "WLANMAC": "20:B5:C6:00:7A:60",
+                "WANMAC": "",
+                "GigabitEthernetPort": "20:B5:C6:00:7A:60",
+                "WirelessMode": "802.11",
+                "NumberOfAntenna": "2",
+                "Temperature": "75",
+                "CableLength": "100",
+                "BuildDate": "2016-07-22 15:44:45 (UTC -0700)",
+                "UnlockCode": "CRQF9PK2S"
+              },
+              "errors": []
+            },
+            "mimosaStatus": {
+              "status": 0,
+              "message": "Command succeeded"
+            }
+          }
+        }
+
+## Passwords [/core/api/service/Passwords.php]
+
+The `UserPassword` field has been deprecated but left here in case it is needed in the future.
+
+### Set [POST /core/api/service/Passwords.php]
+
++ Attributes
+
+    + user: charlie (string, required) - API Username
+    + password: rocks (string, required) - API Password
+    + SuperPassword: 81dc9bdb52d04dc20036dbd8313ed055 (string) - MD5 hash for UI Password
+    + UserPassword: 81dc9bdb52d04dc20036dbd8313ed055 (string) - MD5 has for second account. Unused.
+    
++ Response 200 (application/json)
+
+        {
+          "response": {
+            "mimosaContent": [],
+            "mimosaStatus": {
+              "status": 0,
+              "message": "Command succeeded"
+            }
+          }
+        }
+
+### Get [GET /core/api/service/Passwords.php?username={username}&password={password}]
+
++ Parameters
+    + user: `charlie` (string, required) - API User name
+    + password: `rocks` (required, string) - API Password
+
+
++ Response 200 (applicaiton/json)
+
+        {
+          "response": {
+            "mimosaContent": {
+              "values": {
+                "SuperPassword": "c6c19b75b22a359ec6f2090d43d96bf9",
+                "UserPassword": "c6c19b75b22a359ec6f2090d43d96bf9"
+              },
+              "errors": []
+            },
+            "mimosaStatus": {
+              "status": 0,
+              "message": "Command succeeded"
+            }
+          }
+        }
+
+## Info [/core/api/service/device-info.php]
+
+### Statistics [GET /core/api/service/device-info.php?username={username}&password={password}]
 
 + Request (application/json)
 
++ Parameters
+    + user: `charlie` (string, required) - API User name
+    + password: `rocks` (required, string) - API Password
+
+
+
++ Response 200 (applicaiton/json)
+
         {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
+          "response": {
+            "mimosaContent": {
+              "values": {
+                "DeviceName": "MimosaNorthWest-C5",
+                "Description": "",
+                "InstallDate": "",
+                "Model": "C01",
+                "DeviceMode": "Station",
+                "SerialNumber": "3016184803",
+                "Version": "2.0.1-fcs-5",
+                "Country": "Mimosa Test",
+                "LastReboot": "64d 1h 44m 44s",
+                "IPAddress": "10.1.2.187",
+                "WLANMAC": "20:B5:C6:01:AC:4B",
+                "WANMAC": "",
+                "GigabitEthernetPort": "20:B5:C6:01:AC:4A",
+                "WirelessMode": "802.11",
+                "NumberOfAntenna": "2",
+                "Temperature": "70",
+                "CableLength": "100",
+                "BuildDate": "2016-05-10 16:49:02 (UTC +0000)",
+                "UnlockCode": "NAHNSFDSP"
+              },
+              "errors": []
+            },
+            "mimosaStatus": {
+              "status": 0,
+              "message": "Command succeeded"
+            }
+          }
         }
 
-+ Response 201 (application/json)
+# Group Firmware
 
-    + Headers
+## Prepare Upgrade Process [POST /core/api/service/firm-prepare.php]
 
-            Location: /questions/2
++ Attributes
 
-    + Body
+    + user: charlie (string, required) - API Username
+    + password: rocks (string, required) - API Password
+    + Prepare: '' (string) - HAS TO BE BLANK STRING
+    
++ Response 200 (application/json)
 
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
+        {
+          "response": {
+            "mimosaContent": [],
+            "mimosaStatus": {
+              "status": 0,
+              "message": "Command succeeded"
             }
+          }
+        }
+        
+## Prepare Proccess Status [GET /core/api/service/firm-prepare.php?username={user}&password={password}]
+
++ Request (application/json)
+
++ Parameters
+    + user: `charlie` (string, required) - API User name
+    + password: `rocks` (required, string) - API Password
+    
++ Response 200 (application/json)
+
+        {
+          "response": {
+            "mimosaContent": {
+              "values": {
+                "LoadLicense": "",
+                "Update": 0,
+                "Reset": 0,
+                "Reboot": 0,
+                "Prepare": 101
+              },
+              "errors": []
+            },
+            "mimosaStatus": {
+              "status": 0,
+              "message": "Command succeeded"
+            }
+          }
+        }
