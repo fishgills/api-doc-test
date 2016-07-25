@@ -40,8 +40,8 @@ HTTP Enabled
 + Request (application/json)
 
 + Parameters
-    + user (required, string, `charlie`) ... API User name
-    + password (required, string, `rocks`) ... API Password
+    + user: `charlie` (string, required) - API User name
+    + password: `rocks` (required, string) - API Password
 
 + Response 200 (applicaiton/json)
 
@@ -69,8 +69,8 @@ HTTP Enabled
 
 + Attributes
 
-    + user: charlie (string, required) - API Username
-    + password: rocks (string, required) - API Password
+    + user: `charlie` (string, required) - API Username
+    + password: `rocks` (string, required) - API Password
     + IPAddressMode: `DHCP` (enum) - Static IP with DHCP or only static
         + Default: `DHCP`
         + Members
@@ -81,7 +81,8 @@ HTTP Enabled
     + StaticDNS1: 8.8.8.8 (string) - First DNS server
     + StaticDNS2: 8.8.4.4 (string) - Second DNS server
     + MTU: 60 (number) - Set the MTU
-    + RPSmode: false (boolean) - Set RPS
+    + RPSmode: `0` (boolean) - Set RPS
+    + FlowControl: `0` (boolean) - Set FlowControl
     
     
 + Response 200 (application/json)
